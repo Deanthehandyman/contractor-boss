@@ -1,4 +1,4 @@
-name: Android Build - Contractor BOSS APK
+name: Build Contractor BOSS Android APK
 
 on:
   push:
@@ -13,11 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # Optional but recommended: Cache Buildozer/.buildozer folder to speed up subsequent builds
-      - name: Cache Buildozer dependencies
+      - name: Cache Buildozer environment
         uses: actions/cache@v4
         with:
           path: .buildozer
@@ -26,18 +25,19 @@ jobs:
             ${{ runner.os }}-buildozer-
 
       - name: Build APK with Buildozer
-        uses: digreatbrian/buildozer-action@v2
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          # Optional: specify python version if needed (default is usually fine)
-          # python-version: '3.11'
-          work-dir: .               # root of your repo (where buildozer.spec lives)
-          buildozer-cmd: buildozer android debug   # change to 'buildozer android release' for signed APK
-          # Optional: buildozer_version: 'master' or specific tag if you want bleeding edge
+          workdir: .
+          buildozer_version: stable
+          # Explicit command (debug build is fastest for testing)
+          command: buildozer android debug
+          # If you want release later: change to 'buildozer android release'
+          # (requires keystore setup in buildozer.spec)
 
-      - name: Upload built APK artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ContractorBOSS-${{ github.sha }}-debug.apk   # includes commit SHA for uniqueness
+          name: ContractorBOSS-${{ github.sha }}-debug
           path: bin/*.apk
-          if-no-files-found: error   # fail if no APK was produced
+          if-no-files-found: error
           retention-days: 14
