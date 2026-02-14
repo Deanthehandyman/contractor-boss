@@ -9,14 +9,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      # Fix permissions so the build engine can write to the folder
       - name: Fix Permissions
         run: sudo chmod -R 777 .
 
-      # Run the official Kivy Buildozer engine directly
       - name: Build with Buildozer
         run: |
-          docker run --rm -v $GITHUB_WORKSPACE:/home/user/hostcwd kivy/buildozer android debug
+          docker run --rm -v $GITHUB_WORKSPACE:/home/user/hostcwd kivy/buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
