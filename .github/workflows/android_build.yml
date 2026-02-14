@@ -1,23 +1,20 @@
 name: Android CI Build
-    on:
-      push:
-        branches:
-          - main
-    jobs:
-      build:
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - name: Build with Buildozer
-            uses: ArtemSBulgakov/buildozer-action@v1
-            id: buildozer
-            with:
-              workdir: .
-              buildozer_version: stable
-            env:
-              USER: root
-          - name: Upload APK
-            uses: actions/upload-artifact@v4
-            with:
-              name: ContractorBOSS-Latest
-              path: bin/*.apk
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          workdir: .
+          buildozer_version: stable
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ContractorBOSS-Latest
+          path: bin/*.apk
