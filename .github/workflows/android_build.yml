@@ -1,20 +1,42 @@
-name: Android CI Build
+name: Build Contractor BOSS Android APK (CI)
+
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Build with Buildozer
-        uses: ArtemSerebriakov/buildozer-action@v1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Buildozer dependencies
+        uses: actions/cache@v4
+        with:
+          path: .buildozer
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            ${{ runner.os }}-buildozer-
+
+      - name: Build APK with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
           workdir: .
           buildozer_version: stable
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+          command: buildozer android debug
+          # ↑ Explicitly set to debug for faster/test builds
+          # For production later: change to 'buildozer android release' + configure signing
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: ContractorBOSS-Latest
+          name: ContractorBOSS-${{ github.sha }}-debug-apk
           path: bin/*.apk
+          if-no-files-found: error
+          retention-days: 10
