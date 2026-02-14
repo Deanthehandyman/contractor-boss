@@ -1,11 +1,18 @@
 [app]
+    
     title = Contractor BOSS
+    
     package.name = contractor_boss
+    
     package.domain = org.contractorboss
+    
     source.dir = .
+    
     source.include_exts = py,png,jpg,kv,atlas,txt,spec
+    
     version = 1.0.0
-    requirements = python3,kivy
+    
+    requirements = python3,kivy,pillow,pytesseract,sqlite3
     
     orientation = portrait
     
@@ -17,4 +24,3 @@
     android.ndk = 25b
     
     # (other buildozer settings...)
-    
